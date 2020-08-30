@@ -15,7 +15,8 @@ const breakOutGame = {
     },
     keycode : {
         left: 37,
-        right: 39
+        right: 39,
+        enter: 13
     },
     paddle: undefined,
     paddleSize :{
@@ -43,19 +44,19 @@ const breakOutGame = {
         h: 30
     },
 
-
-
+    // INITIALIZE THE GAME
     init(id){
         this.canvasId = id
         this.ctx = document.getElementById(this.canvasId).getContext('2d')
         console.log(this.ctx)
         this.setDimensions()
+        this.reset()
         this.setEventListener()   
-        this.start()
     },
 
+    // DIMENSIONS FOR THE CANVAS
     setDimensions() {
-        
+
         const divSize = document.querySelector('#game-board')
         
         document.getElementById(this.canvasId).setAttribute('width', 1100)
@@ -68,18 +69,21 @@ const breakOutGame = {
 
     },
 
-    setEventListener(){
+    // COMMANDS
+    setEventListener() {
+
         document.onkeydown = e => {
             e.keyCode === this.keycode.left ? this.paddle.movePaddle('left') : null
             e.keyCode === this.keycode.right ? this.paddle.movePaddle('right') : null
             //console.log(e)
+            e.keyCode === this.keycode.enter ? this.start() : null
         }
     },
 
-
+    // START THE GAME
     start(){
 
-        this.reset()
+        //this.reset()
         this.interval = setInterval(() => {
 
             this.clearScreen()
@@ -90,6 +94,7 @@ const breakOutGame = {
         
     },
 
+    // RESET THE GAME
     reset() {
 
         this.drawBackground()
@@ -101,8 +106,18 @@ const breakOutGame = {
         this.ball = new Ball(this.ctx, centerX + (this.paddleSize.w / 2), this.canvasSize.h / 2, this.ballSize.w, this.ballSize.h, this.canvasSize)
         this.brick = new Brick(this.ctx, 0, 0, 105, this.brickSize.h, this.canvasSize)
         
+        this.ball.draw()
+        this.paddle.draw()
+        this.brick.draw()
     },
 
+    // BACKGROUND
+    drawBackground(){
+        this.ctx.fillStyle = '#d1ebf7'
+        this.ctx.fillRect(0,0, this.canvasSize.w, this.canvasSize.h)
+    },
+
+    // DRAW THE BOARD
     drawAll() {
         this.drawBackground()
         this.paddle.draw()
@@ -110,15 +125,12 @@ const breakOutGame = {
         this.brick.draw()
     },
 
-    drawBackground(){
-        this.ctx.fillStyle = '#d1ebf7'
-        this.ctx.fillRect(0,0, this.canvasSize.w, this.canvasSize.h)
-    },
-
+    // CLEAR SCREEN 
     clearScreen() {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
     },
 
+    // LOOSE LIFE
     resetBallAndPaddle() {
 
         if (this.lifes > 0) {
@@ -137,13 +149,14 @@ const breakOutGame = {
 
     },
 
+    // GAMEOVER
     gameOver() {
-
 
         clearInterval(this.interval)
 
     },
 
+    // CHECK BOUNDERIES
     setBounderies() {
 
         // Up bounderie
@@ -172,6 +185,7 @@ const breakOutGame = {
 
     },
 
+    // CHECK COLLISIONS
     paddleCollision() {
 
         if (this.ball.ballPos.y + this.ball.ballRadius >= this.paddle.paddlePos.y &&
