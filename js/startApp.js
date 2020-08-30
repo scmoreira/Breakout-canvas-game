@@ -107,7 +107,7 @@ const breakOutGame = {
         this.drawBackground()
         this.paddle.draw()
         this.ball.draw()
-       // this.brick.draw()
+        this.brick.draw()
     },
 
     drawBackground(){
