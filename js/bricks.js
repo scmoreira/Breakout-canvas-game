@@ -14,7 +14,7 @@ class Brick {
         }
         this.bricks = []
         this.rows = 7
-        this.columns = 10
+        this.columns = 9
         this.colors = ['rgb(255,0,0)','rgb(0,255,0)','rgb(0,0,255)','rgb(255,255,0)']
     }
 
@@ -29,7 +29,7 @@ class Brick {
 
         for (let r = 1; r < this.rows; r++) {
             for (let c = 0; c < this.columns; c++) {
-                this.brickPos.x = c * (this.brickSize.h + 80)
+                this.brickPos.x = c * (this.brickSize.h + 80) + 7
                 this.brickPos.y = r * (this.brickSize.w - 65)
                 this.bricks[r][c].x = this.brickPos.x
                 this.bricks[r][c].y =  this.brickPos.y

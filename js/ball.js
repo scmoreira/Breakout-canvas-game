@@ -12,10 +12,10 @@ class Ball {
         }
         this.ballRadius = this.ballSize.w / 2
         this.ballVel = {
-            x: 0,
+            x: 5,
             y: 50
         }
-        this.ballGravity = 0
+        this.ballGravity = .8
         this.canvasSize = canvasSize
     }
 
@@ -38,34 +38,6 @@ class Ball {
         this.ballPos.x += this.ballVel.x    
         this.ballVel.y += this.ballGravity
         this.ballPos.y += this.ballVel.y
-
-        //console.log(this.ballVel.y)
-
-        this.setBounderies()
-
-    }
-
-    setBounderies() {
-
-        // Up bounderie
-        if (this.ballPos.y - this.ballRadius <= this.canvasSize.h - this.canvasSize.h) {
-
-           this.ballVel.y *= -1
-
-        } else {
-           console.log('game over')
-        }
-
-        // Right and left boundarie
-        if (this.ballPos.x < this.canvasSize.w - this.canvasSize.w || this.ballPos.x > this.canvasSize.w - this.ballSize.w) {
-
-            this.ballVel.x *= -1
-
-        } else {
-
-            null
-
-        }
 
     }
 
