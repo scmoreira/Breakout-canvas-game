@@ -23,13 +23,10 @@ class Paddle {
     }
     
 
-    movePaddle(dir){
-        // dir === 'left'  ? this.paddlePos.x -= 5 : null
-        // dir === 'right' ? this.paddlePos.x += 5 : null
-        dir === 'left' && this.paddlePos.x >= 0 ? this.paddlePos.x -= this.paddleVel : null
-        dir === 'right' && this.paddlePos.x <= this.canvasSize.w - this.paddleSize.w ? this.paddlePos.x += this.paddleVel : null
-        //console.log(this.paddlePos.x)
-        // console.log('left') 
-        // console.log('right')
+    movePaddle(dir) {
+        
+        dir === 'left' && this.paddlePos.x > 0 ? this.paddlePos.x -= this.paddleVel : null
+        dir === 'right' && this.paddlePos.x < this.canvasSize.w - this.paddleSize.w ? this.paddlePos.x += this.paddleVel : null
+
     }
 }

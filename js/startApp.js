@@ -7,6 +7,8 @@ const breakOutGame = {
     canvasId: undefined,
     ctx: undefined,
     FPS: 60,
+    lifes: 3,
+    score: undefined,
     canvasSize: {
         w: undefined,
         h: undefined
@@ -26,9 +28,15 @@ const breakOutGame = {
     },
     ball: undefined, 
     ballSize : {
-        w:25,
+        w: 25,
         h: 5
     },
+    ballRadius: undefined,
+    ballVel: {
+        x: 0,
+        y: 50
+    },
+    ballGravity: 0,
     brick: undefined,
     brickSize: {
         w: undefined,
@@ -50,11 +58,11 @@ const breakOutGame = {
         
         const divSize = document.querySelector('#game-board')
         
-        document.getElementById(this.canvasId).setAttribute('width', window.innerWidth - 600)
+        document.getElementById(this.canvasId).setAttribute('width', 1100)
         document.getElementById(this.canvasId).setAttribute('height', window.innerHeight)
 
         this.canvasSize = {
-            w: window.innerWidth - 600,
+            w: 1000,
             h: window.innerHeight
         }
 
@@ -78,13 +86,14 @@ const breakOutGame = {
             this.drawAll()
             this.isCollision()
             
-         }, 100)
+         }, 50)
         
     },
 
     reset() {
 
         this.drawBackground()
+
         const centerX = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
         const centerY = (this.canvasSize.h - 100)
 
@@ -98,7 +107,7 @@ const breakOutGame = {
         this.drawBackground()
         this.paddle.draw()
         this.ball.draw()
-        this.brick.draw()
+       // this.brick.draw()
     },
 
     drawBackground(){
@@ -110,7 +119,60 @@ const breakOutGame = {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
     },
 
-    isCollision() {
+    resetBallAndPaddle() {
+
+        if (this.lifes > 0) {
+
+            this.ball.ballPos.x = (this.canvasSize.w / 2)
+            this.ball.ballPos.y = (this.canvasSize.h / 2)
+
+            this.paddle.paddlePos.x = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
+            this.paddle.paddlePos.y = (this.canvasSize.h - 100)
+
+        } else {
+
+            this.gameOver()
+
+        }
+
+    },
+
+    gameOver() {
+
+
+        clearInterval(this.interval)
+
+    },
+
+    setBounderies() {
+
+        // Up bounderie
+        if (this.ball.ballPos.y - this.ball.ballRadius < 0) {
+
+            this.ball.ballVel.y *= -1
+
+        } else if (this.ball.ballPos.y + this.ball.ballRadius > this.canvasSize.h) {
+
+            this.lifes--
+
+            this.resetBallAndPaddle()
+
+        }
+
+        // Right and left boundarie
+        if (this.ball.ballPos.x < this.canvasSize.w - this.canvasSize.w || this.ball.ballPos.x > this.canvasSize.w - this.ballSize.w) {
+
+            this.ball.ballVel.x *= -1
+
+        } else {
+
+            null
+
+        }
+
+    },
+
+    paddleCollision() {
 
         if (this.ball.ballPos.y + this.ball.ballRadius >= this.paddle.paddlePos.y &&
             this.ball.ballPos.x > this.paddle.paddlePos.x &&
@@ -123,6 +185,13 @@ const breakOutGame = {
             null
 
         }
+    },
+
+    isCollision() {
+
+        this.setBounderies()
+        this.paddleCollision()
+
     }
     
 }
