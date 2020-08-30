@@ -46,15 +46,18 @@ const breakOutGame = {
         this.start()
     },
 
-    setDimensions(){
+    setDimensions() {
+        
         const divSize = document.querySelector('#game-board')
-        console.log(divSize.style)
+        
         document.getElementById(this.canvasId).setAttribute('width', window.innerWidth - 600)
         document.getElementById(this.canvasId).setAttribute('height', window.innerHeight)
+
         this.canvasSize = {
             w: window.innerWidth - 600,
             h: window.innerHeight
         }
+
     },
 
     setEventListener(){
