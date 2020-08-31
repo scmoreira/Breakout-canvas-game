@@ -12,8 +12,8 @@ class Ball {
         }
         this.ballRadius = this.ballSize.w / 2
         this.ballVel = {
-            x: 5,
-            y: 50
+            x: 10,
+            y: 30
         }
         this.ballGravity = .8
         this.canvasSize = canvasSize

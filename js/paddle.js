@@ -10,13 +10,13 @@ class Paddle {
             w: paddleW,
             h: paddleH
         }
-        this.paddleVel = 5
+        this.paddleVel = 25
         this.canvasSize = canvasSize  
     }
 
     draw() {
         
-        this.ctx.fillStyle = 'black'
+        this.ctx.fillStyle = 'white'
         this.ctx.fillRect(this.paddlePos.x, this.paddlePos.y, this.paddleSize.w, this.paddleSize.h)
       
         this.movePaddle()
