@@ -35,11 +35,10 @@ const breakOutGame = {
     },
     ballRadius: undefined,
     ballVel: {
-        x: 0,
-        y: 50
+        x: 10,
+        y: 30
     },
     ballGravity: 0,
-    //brick: undefined,
     brickSize: {
         w: 105,
         h: 30
@@ -62,7 +61,7 @@ const breakOutGame = {
         w: 35,
         h: 35
     },
-    powerUpType: ['smallPaddle', 'bigPaddle'],
+    powerUpType: ['smallPaddle', 'bigPaddle', 'fastBall', 'crazyKeys'],
 
 
     // INITIALIZE THE GAME
@@ -272,66 +271,6 @@ const breakOutGame = {
     },
 
 
-    // CLEAR SCREEN 
-    clearScreen() {
-        this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
-    },
-        
-    // LIFE COUNTER
-    lifeCounter() {
-
-        this.lifes--
-
-        // Update HTML deleting the heart
-        const lifeNode = document.querySelectorAll('.life')
-        lifeNode[this.lifes].style.opacity = '0'
-
-    },
-
-    // LOOSE LIFE
-    isLosingLife() {
-
-        if (this.lifes > 0) {
-            //console.log('entró');
-
-            this.ball.ballPos.x = (this.canvasSize.w / 2)
-            this.ball.ballPos.y = (this.canvasSize.h / 2)
-
-            this.paddle.paddlePos.x = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
-            this.paddle.paddlePos.y = (this.canvasSize.h - 70)
-
-        } else {
-
-            this.gameOver()
-
-        }
-
-    },
-    
-    // POP UPS GAME OVER/WIN
-    banner() {
-
-        const gameOverNode = document.querySelector('.gameover')
-        const youWinNode = document.querySelector('.you-lose')
-        
-        // si pierde
-        gameOverNode.style.opacity = '1'
-        gameOverNode.style.display = 'flex'
-        youWinNode.classList.remove('hide')
-
-    },
-
-    // GAMEOVER
-    gameOver() {
-                
-        this.banner()
-
-        clearInterval(this.interval)
-        this.createBricksArray()
-        this.reset()
-        
-    },
-
     // CHECK BOUNDERIES
     setBounderies() {
 
@@ -412,22 +351,30 @@ const breakOutGame = {
 
     setPowerUp(type) {
         const paddleRealSize = this.paddleSize.w
-        //console.log(type);
+        const ballRealVel = this.ballVel
+        console.log(type);
 
         switch (type) {
-         case 'bigPaddle':
+          case 'bigPaddle':
             this.paddle.paddleSize.w *= 2
             break
-         case 'smallPaddle':
+          case 'smallPaddle':
             this.paddle.paddleSize.w /= 2
             break
+          case 'fastBall':
+            this.ball.ballVel.y *= 2
+            break
+          case 'crazyKeys':
+              this.keycode.left = 39
+              this.keycode.right = 37
         }
         
         setTimeout(() => {
             
             this.paddle.paddleSize.w = paddleRealSize
+            this.ball.ballVel = ballRealVel
 
-        }, 5000)
+        }, 7000)
     
     },
 
@@ -454,13 +401,71 @@ const breakOutGame = {
         } 
     },
 
-   
-
     isCollision() {
 
         this.setBounderies()
         this.isPaddleCollision()
         this.isBrickCollision()
     },
+ 
+    // CLEAR SCREEN 
+    clearScreen() {
+        this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
+    },
+        
+    // LIFE COUNTER
+    lifeCounter() {
+
+        this.lifes--
+
+        // Update HTML deleting the heart
+        const lifeNode = document.querySelectorAll('.life')
+        lifeNode[this.lifes].style.opacity = '0'
+
+    },
+
+    // LOOSE LIFE
+    isLosingLife() {
+
+        if (this.lifes > 0) {
+            //console.log('entró');
+
+            this.ball.ballPos.x = (this.canvasSize.w / 2)
+            this.ball.ballPos.y = (this.canvasSize.h / 2)
+
+            this.paddle.paddlePos.x = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
+            this.paddle.paddlePos.y = (this.canvasSize.h - 70)
+
+        } else {
+
+            this.gameOver()
+
+        }
+
+    },
     
+    // POP UPS GAME OVER/WIN
+    banner() {
+
+        const gameOverNode = document.querySelector('.gameover')
+        const youWinNode = document.querySelector('.you-lose')
+        
+        // si pierde
+        gameOverNode.style.opacity = '1'
+        gameOverNode.style.display = 'flex'
+        youWinNode.classList.remove('hide')
+
+    },
+
+    // GAMEOVER
+    gameOver() {
+                
+        this.banner()
+
+        clearInterval(this.interval)
+        this.createBricksArray()
+        this.reset()
+        
+    },
+
 }
