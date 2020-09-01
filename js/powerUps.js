@@ -15,38 +15,37 @@ class PowerUps {
             y: undefined
         }
         this.powerUpSize = {
-            w: 50,
-            h: 50
+            w: 70,
+            h: 70
         }
         this.powerUpVel = {
             x: 0,
-            y: 50
+            y: 10
         }
-        this.powerUpGravity = 50
+        this.powerUpGravity = .4
         this.canvasSize = canvasSize
 
-        // this.imageName = this.imageName
-        // this.imageInstance = undefined 
+        this.imageName = 'box-2.png'
+        this.imageInstance = undefined 
 
-        // this.init()
+        this.init()
     }
 
-    // init(){
-    //    this.imageInstance = new Image()
-    //     image.src = `img/${this.imageName}`
-    //     //image.onload = () => this.ctx.drawImage(image, tthis.powerUpPos.x, this.powerUpPos.y, this.powerUpSize.w, this.powerUpSize.h
+    init(){
+       this.imageInstance = new Image()
+       this.imageInstance.src = `./img/${this.imageName}`
+        
     
 
-    // }
+    }
 
     draw(x, y){
         
             this.move(x, y)
-            this.ctx.fillStyle = 'yellow'
-            this.ctx.fillRect(x, y, this.powerUpSize.w, this.powerUpSize.h)
-            console.log(x, y);
-
-        //this.ctx.drawImage(this.imageInstance, this.powerUpPos.x, this.powerUpPos.y, this.powerUpSize.w, this.powerUpSize.h)
+            this.ctx.drawImage(this.imageInstance, x, y, this.powerUpSize.w, this.powerUpSize.h)
+            // this.ctx.fillStyle = 'yellow'
+            // this.ctx.fillRect(x, y, this.powerUpSize.w, this.powerUpSize.h)
+            //console.log(x, y);
     }
 
     move(x, y){
@@ -59,9 +58,10 @@ class PowerUps {
 
         this.powerUpVel.y += this.powerUpGravity
         y += this.powerUpVel.y
-        console.log(y, '------');
+        //console.log(y, '------');
 
        
     }
 
+    
 }

@@ -15,7 +15,7 @@ class Ball {
             x: 10,
             y: 30
         }
-        this.ballGravity = .8
+        this.ballGravity = .4
         this.canvasSize = canvasSize
     }
 

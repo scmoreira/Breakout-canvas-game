@@ -53,8 +53,17 @@ const breakOutGame = {
     brickRows: 7,
     brickColumns: 9,
     powerUp: undefined,
-    powerUpsArray: [{x: undefined, y: undefined}], 
-    
+    powerUpsArray: [{  
+        x: undefined, 
+        y: undefined,
+        type: undefined
+    }], 
+    powerUpSize: {
+        w: 35,
+        h: 35
+    },
+    powerUpType: ['smallPaddle', 'bigPaddle'],
+
 
     // INITIALIZE THE GAME
     init(id){
@@ -148,10 +157,28 @@ const breakOutGame = {
             this.bricks[c] = []
     
             for (let r = 0; r < this.brickRows; r++) {
-               this.bricks[c][r] = {x: 0, y: 0, status: true, power: true}
-               //console.log(this.bricks[r][c])
+               this.bricks[c][r] = {x: 0, y: 0, status: true, power: false}
+               
             }
-        } 
+           
+        }
+        
+        // Generate random powerups location
+        for (let i = 0; i < 7; i++) {
+             
+            let columnIndex = Math.floor(Math.random() * 8)
+            let rowIndex = Math.floor(Math.random() * 6) + 1
+            
+           if (this.bricks[columnIndex][rowIndex].power === true) {
+              
+                null
+              
+           } else {
+               
+                this.bricks[columnIndex][rowIndex].power = true
+                 
+           }
+        }
     },
 
     // BACKGROUND
@@ -212,27 +239,36 @@ const breakOutGame = {
         
     },
 
+    // DRAW POWER-UPS
+    drawPowerUps() {
+        for (let i = 0; i < this.powerUpsArray.length; i++) {
+            if (i === 0) {
+                null
+            } else {
+                  
+                let powerUpPosX = this.powerUpsArray[i].x + (this.brickSize.w / 2 - this.powerUpSize.w/2)
+                let powerUpPosY = this.powerUpsArray[i].y + this.brickSize.h
+                let randomType = Math.floor(Math.random() * this.powerUpType.length)
+                this.powerUpsArray[i].type = this.powerUpType[randomType]
+                //console.log(this.powerUpsArray[i].type);
+                
+                this.powerUp.draw(powerUpPosX, powerUpPosY)
+                this.powerUpsArray[i].y += 10
+
+                this.isPowerUpCollision(powerUpPosX, powerUpPosY)
+            } 
+        }
+       
+    },
+
     // DRAW THE BOARD
     drawAll() {
 
         this.drawBackground()
         this.paddle.draw()
         this.ball.draw()
-        for (let i = 0; i < this.powerUpsArray.length; i++) {
-            if (i === 0) {
-                null
-            } else {
-               this.powerUp.draw(this.powerUpsArray[i].x, this.powerUpsArray[i].y + 10)
-               this.powerUpsArray[i].y += 10
-            }
-            
-       }
-        // this.powerUpsArray.forEach(element => {  
-        //     this.powerUp.draw(element.x, element.y + 10)
-        //     element.y += 10
-        // })
-        console.log(this.powerUpsArray)
-
+        this.drawPowerUps()
+        //console.log(this.powerUpsArray)
     },
 
 
@@ -253,10 +289,10 @@ const breakOutGame = {
     },
 
     // LOOSE LIFE
-    resetBallAndPaddle() {
+    isLosingLife() {
 
         if (this.lifes > 0) {
-            console.log('entró');
+            //console.log('entró');
 
             this.ball.ballPos.x = (this.canvasSize.w / 2)
             this.ball.ballPos.y = (this.canvasSize.h / 2)
@@ -299,16 +335,16 @@ const breakOutGame = {
     // CHECK BOUNDERIES
     setBounderies() {
 
-        // Up bounderie
+        // Up and down bounderies
         if (this.ball.ballPos.y - this.ball.ballRadius < 0) {
 
             this.ball.ballVel.y *= -1
 
-        } else if (this.ball.ballPos.y + this.ball.ballRadius > this.canvasSize.h) {
+        } else if (this.ball.ballPos.y + this.ball.ballRadius > this.canvasSize.h * 2) {
 
             this.lifeCounter()
 
-            this.resetBallAndPaddle()
+            this.isLosingLife()
 
         }
 
@@ -333,7 +369,7 @@ const breakOutGame = {
             this.ball.ballPos.x + this.ball.ballRadius > this.paddle.paddlePos.x &&
             this.ball.ballPos.x - this.ball.ballRadius < this.paddle.paddlePos.x + this.paddle.paddleSize.w) {
                 
-                this.ball.ballVel.y *= -1
+            this.ball.ballVel.y *= -1
 
         } else {
 
@@ -362,8 +398,9 @@ const breakOutGame = {
                     //console.log(b,'---',b.status)
                     if (b.power) {
                         //this.powerUp.draw(b.x, b.y)
+                                                  
                         this.powerUpsArray.push({x: b.x, y: b.y})
-                        console.log('HOLA')
+                        
                     }
                 }
 
@@ -372,6 +409,52 @@ const breakOutGame = {
             }
         }
     },
+
+    setPowerUp(type) {
+        const paddleRealSize = this.paddleSize.w
+        //console.log(type);
+
+        switch (type) {
+         case 'bigPaddle':
+            this.paddle.paddleSize.w *= 2
+            break
+         case 'smallPaddle':
+            this.paddle.paddleSize.w /= 2
+            break
+        }
+        
+        setTimeout(() => {
+            
+            this.paddle.paddleSize.w = paddleRealSize
+
+        }, 5000)
+    
+    },
+
+    isPowerUpCollision(powerUpPosX, powerUpPosY){
+
+        for (let i = 0; i < this.powerUpsArray.length; i++) {
+            if (i === 0) {
+                null
+            } else {
+        
+                if (powerUpPosX + this.powerUpSize.w > this.paddle.paddlePos.x &&
+                    powerUpPosX < this.paddle.paddlePos.x + this.paddle.paddleSize.w &&
+                    powerUpPosY + this.powerUpSize.h > this.paddle.paddlePos.y) {
+                    //console.log('colisioooon')
+                    this.setPowerUp(this.powerUpsArray[i].type)
+                    this.powerUpsArray.splice(i, 1)
+                    //console.log(this.powerUpsArray)
+                    
+                    //console.log(this.paddleSize.w)
+                } else if ( powerUpPosY + this.powerUpSize.h > this.canvasSize.h) {
+                    this.powerUpsArray.splice(i, 1)
+                }
+            }
+        } 
+    },
+
+   
 
     isCollision() {
 

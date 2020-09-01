@@ -10,7 +10,7 @@ class Paddle {
             w: paddleW,
             h: paddleH
         }
-        this.paddleVel = 25
+        this.paddleVel = 50
         this.canvasSize = canvasSize  
     }
 
