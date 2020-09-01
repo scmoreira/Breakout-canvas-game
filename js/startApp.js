@@ -52,6 +52,8 @@ const breakOutGame = {
     bricks: [],
     brickRows: 7,
     brickColumns: 9,
+    powerUp: undefined,
+    powerUpsArray: [{x: undefined, y: undefined}], 
     
 
     // INITIALIZE THE GAME
@@ -132,7 +134,8 @@ const breakOutGame = {
 
         this.paddle = new Paddle(this.ctx, centerX, centerY, this.paddleSize.w, this.paddleSize.h, this.canvasSize)
         this.ball = new Ball(this.ctx, centerX + (this.paddleSize.w / 2), this.canvasSize.h / 2, this.ballSize.w, this.ballSize.h, this.canvasSize)
-        
+        this.powerUp = new PowerUps(this.ctx, this.paddleSize.w, this.paddleSize.h, this.ballSize.w, this.ballSize.h,this.canvasSize )
+
         this.ball.draw()
         this.paddle.draw()
         this.drawBricks()
@@ -145,7 +148,7 @@ const breakOutGame = {
             this.bricks[c] = []
     
             for (let r = 0; r < this.brickRows; r++) {
-               this.bricks[c][r] = {x: 0, y: 0, status: true}
+               this.bricks[c][r] = {x: 0, y: 0, status: true, power: true}
                //console.log(this.bricks[r][c])
             }
         } 
@@ -211,10 +214,25 @@ const breakOutGame = {
 
     // DRAW THE BOARD
     drawAll() {
+
         this.drawBackground()
         this.paddle.draw()
         this.ball.draw()
-        //this.brick.draw()
+        for (let i = 0; i < this.powerUpsArray.length; i++) {
+            if (i === 0) {
+                null
+            } else {
+               this.powerUp.draw(this.powerUpsArray[i].x, this.powerUpsArray[i].y + 10)
+               this.powerUpsArray[i].y += 10
+            }
+            
+       }
+        // this.powerUpsArray.forEach(element => {  
+        //     this.powerUp.draw(element.x, element.y + 10)
+        //     element.y += 10
+        // })
+        console.log(this.powerUpsArray)
+
     },
 
 
@@ -308,7 +326,7 @@ const breakOutGame = {
     },
 
     // CHECK COLLISIONS
-    paddleCollision() {
+    isPaddleCollision() {
 
         if (this.ball.ballPos.y + this.ball.ballRadius > this.paddle.paddlePos.y &&
             this.ball.ballPos.y - this.ball.ballRadius < this.paddle.paddlePos.y + this.paddle.paddleSize.h &&
@@ -334,27 +352,32 @@ const breakOutGame = {
 
                if (b.status) { 
 
-                    if (this.ball.ballPos.y + this.ball.ballRadius > b.y &&
-                        this.ball.ballPos.y - this.ball.ballRadius < b.y + this.brickSize.h &&
-                        this.ball.ballPos.x + this.ball.ballRadius > b.x &&
-                        this.ball.ballPos.x - this.ball.ballRadius < b.x + this.brickSize.w) {
-                        //console.log('golpea')
-                        this.ball.ballVel.y *= -1
-                        b.status = false
-                        //console.log(b,'---',b.status)
+                if (this.ball.ballPos.y + this.ball.ballRadius > b.y &&
+                    this.ball.ballPos.y - this.ball.ballRadius < b.y + this.brickSize.h &&
+                    this.ball.ballPos.x + this.ball.ballRadius > b.x &&
+                    this.ball.ballPos.x - this.ball.ballRadius < b.x + this.brickSize.w) {
+                    //console.log('golpea')
+                    this.ball.ballVel.y *= -1
+                    b.status = false
+                    //console.log(b,'---',b.status)
+                    if (b.power) {
+                        //this.powerUp.draw(b.x, b.y)
+                        this.powerUpsArray.push({x: b.x, y: b.y})
+                        console.log('HOLA')
                     }
+                }
 
               }
             
             }
         }
-     },
+    },
 
     isCollision() {
 
         this.setBounderies()
-        this.paddleCollision()
+        this.isPaddleCollision()
         this.isBrickCollision()
-    }
+    },
     
 }
