@@ -26,7 +26,7 @@ class Paddle {
     movePaddle(dir) {
         
         dir === 'left' && this.paddlePos.x > 0 ? this.paddlePos.x -= this.paddleVel : null
-        dir === 'right' && this.paddlePos.x < this.canvasSize.w - this.paddleSize.w ? this.paddlePos.x += this.paddleVel : null
-
+        dir === 'right' && this.paddlePos.x < this.canvasSize.w - this.paddleSize.w ? this.paddlePos.x += this.paddleVel : null  
+        
     }
 }

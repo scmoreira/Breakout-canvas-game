@@ -8,7 +8,7 @@ const breakOutGame = {
     ctx: undefined,
     FPS: 60,
     lifes: 3,
-    score: undefined,
+    score: 0,
     canvasSize: {
         w: undefined,
         h: undefined
@@ -73,6 +73,7 @@ const breakOutGame = {
         this.createBricksArray()
         this.reset()
         this.setEventListener()  
+        this.soundManagement()
     },
 
     // DIMENSIONS FOR THE CANVAS
@@ -92,6 +93,20 @@ const breakOutGame = {
 
     // COMMANDS
     setEventListener() {
+                
+        //document.addEventListener("mousemove", this.paddle.movePaddle('mouseMoveHandler'), false);
+                
+        // document.onmousemove = e => {
+        //     console.log('mouseee')
+
+        //     let relativeX = e.clientX + 600
+
+        //     console.log(this.canvasId, '------')
+        //     if (relativeX > this.canvasSize.w - this.canvasSize.w && relativeX < this.canvasSize.w) {
+        //         this.paddle.paddlePos.x = relativeX - this.paddle.paddleSize.w / 2;
+        //         console.log(e.clientX)
+        //     }
+        // }
 
         document.onkeydown = e => {
             
@@ -119,6 +134,8 @@ const breakOutGame = {
 
     // START THE GAME
     start(){
+
+        this.setEventListener()
 
         //this.reset()
         this.interval = setInterval(() => {
@@ -270,6 +287,17 @@ const breakOutGame = {
         //console.log(this.powerUpsArray)
     },
 
+    setScore() {
+            
+        this.score += 10
+        const scoreNode = document.querySelector('.score span')
+        
+        // console.log(this.score, '---', scoreNode)
+
+        this.score < 100 ? scoreNode.innerText = '0' + this.score : scoreNode.innerText = this.score
+
+    },
+
 
     // CHECK BOUNDERIES
     setBounderies() {
@@ -277,19 +305,22 @@ const breakOutGame = {
         // Up and down bounderies
         if (this.ball.ballPos.y - this.ball.ballRadius < 0) {
 
+            wall_hit.play()
             this.ball.ballVel.y *= -1
 
-        } else if (this.ball.ballPos.y + this.ball.ballRadius > this.canvasSize.h * 2) {
+        } else if (this.ball.ballPos.y + this.ball.ballRadius > this.canvasSize.h) {
 
+            
             this.lifeCounter()
 
-            this.isLosingLife()
+            //this.isLosingLife()
 
         }
 
         // Right and left boundaries
         if (this.ball.ballPos.x < this.canvasSize.w - this.canvasSize.w || this.ball.ballPos.x > this.canvasSize.w - this.ballSize.w) {
 
+            wall_hit.play()
             this.ball.ballVel.x *= -1
 
         } else {
@@ -309,7 +340,8 @@ const breakOutGame = {
             this.ball.ballPos.x - this.ball.ballRadius < this.paddle.paddlePos.x + this.paddle.paddleSize.w) {
                 
             this.ball.ballVel.y *= -1
-
+            paddle_hit.play()
+            
         } else {
 
             null
@@ -333,7 +365,9 @@ const breakOutGame = {
                     this.ball.ballPos.x - this.ball.ballRadius < b.x + this.brickSize.w) {
                     //console.log('golpea')
                     this.ball.ballVel.y *= -1
+                    brick_hit.play()
                     b.status = false
+                    this.setScore()
                     //console.log(b,'---',b.status)
                     if (b.power) {
                         //this.powerUp.draw(b.x, b.y)
@@ -389,6 +423,7 @@ const breakOutGame = {
                     powerUpPosX < this.paddle.paddlePos.x + this.paddle.paddleSize.w &&
                     powerUpPosY + this.powerUpSize.h > this.paddle.paddlePos.y) {
                     //console.log('colisioooon')
+                    power_up.play()
                     this.setPowerUp(this.powerUpsArray[i].type)
                     this.powerUpsArray.splice(i, 1)
                     //console.log(this.powerUpsArray)
@@ -412,17 +447,6 @@ const breakOutGame = {
     clearScreen() {
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
     },
-        
-    // LIFE COUNTER
-    lifeCounter() {
-
-        this.lifes--
-
-        // Update HTML deleting the heart
-        const lifeNode = document.querySelectorAll('.life')
-        lifeNode[this.lifes].style.opacity = '0'
-
-    },
 
     // LOOSE LIFE
     isLosingLife() {
@@ -439,8 +463,22 @@ const breakOutGame = {
         } else {
 
             this.gameOver()
+            lose.play()
 
         }
+
+    },
+
+    // LIFE COUNTER
+    lifeCounter() {
+
+        this.lifes--
+        life_lost.play()
+        this.isLosingLife()
+
+        // Update HTML deleting the heart
+        const lifeNode = document.querySelectorAll('.life')
+        lifeNode[this.lifes].style.opacity = '0'
 
     },
     
@@ -450,10 +488,38 @@ const breakOutGame = {
         const gameOverNode = document.querySelector('.gameover')
         const youWinNode = document.querySelector('.you-lose')
         
-        // si pierde
+        // If lose
         gameOverNode.style.opacity = '1'
         gameOverNode.style.display = 'flex'
         youWinNode.classList.remove('hide')
+
+        // If win
+
+    },
+        
+    // SOUND MANAGEMENT
+    soundManagement() {
+
+        const soundNode = document.querySelector('#sound')
+
+        soundNode.addEventListener('click', audioManager)
+
+        function audioManager() {
+
+            let imgSrc = soundNode.getAttribute('src')
+
+            let soundImg = imgSrc == './img/volume-on.png' ? './img/volume-off.png' : './img/volume-on.png'
+
+            soundNode.setAttribute('src', soundImg)
+            
+            // MUTE AND UNMUTE SOUNDS
+            wall_hit.muted = wall_hit.muted ? false : true
+            paddle_hit.muted = paddle_hit.muted ? false : true
+            brick_hit.muted = brick_hit.muted ? false : true
+            life_lost.muted = life_lost.muted ? false : true
+            win.muted = win.muted ? false : true
+            lose.muted = lose.muted ? false : true
+        }
 
     },
 
