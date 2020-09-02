@@ -68,7 +68,7 @@ const breakOutGame = {
     init(id){
         this.canvasId = id
         this.ctx = document.getElementById(this.canvasId).getContext('2d')
-        console.log(this.ctx)
+        //console.log(this.ctx)
         this.setDimensions()
         this.createBricksArray()
         this.reset()
@@ -94,20 +94,6 @@ const breakOutGame = {
     // COMMANDS
     setEventListener() {
                 
-        //document.addEventListener("mousemove", this.paddle.movePaddle('mouseMoveHandler'), false);
-                
-        // document.onmousemove = e => {
-        //     console.log('mouseee')
-
-        //     let relativeX = e.clientX + 600
-
-        //     console.log(this.canvasId, '------')
-        //     if (relativeX > this.canvasSize.w - this.canvasSize.w && relativeX < this.canvasSize.w) {
-        //         this.paddle.paddlePos.x = relativeX - this.paddle.paddleSize.w / 2;
-        //         console.log(e.clientX)
-        //     }
-        // }
-
         document.onkeydown = e => {
             
             e.keyCode === this.keycode.left ? this.paddle.movePaddle('left') : null
@@ -120,33 +106,13 @@ const breakOutGame = {
                 this.isPlaying = true
             } else if (e.keyCode === this.keycode.enter && this.isPlaying === true) {
                 //console.log('Pausado')
+                
                 this.pause()
+
                 this.isPlaying = false
             } 
 
         }
-    },
- 
-    // PAUSE THE GAME
-    pause() {
-        clearInterval(this.interval)
-    },
-
-    // START THE GAME
-    start(){
-
-        this.setEventListener()
-
-        //this.reset()
-        this.interval = setInterval(() => {
-
-            this.clearScreen()
-            this.drawAll()
-            this.drawBricks()
-            this.isCollision()
-            
-         }, 50)
-        
     },
 
     // RESET THE GAME
@@ -165,7 +131,29 @@ const breakOutGame = {
         this.paddle.draw()
         this.drawBricks()
     },
+ 
+    // START THE GAME
+    start(){
 
+        this.setEventListener()
+
+        //this.reset()
+        this.interval = setInterval(() => {
+
+            this.clearScreen()
+            this.drawAll()
+            this.drawBricks()
+            this.isCollision()
+            
+         }, 50)
+        
+    },
+
+     // PAUSE THE GAME
+     pause() {
+        clearInterval(this.interval)
+    },
+    
     // CREATE ARRAY OF BRICKS
     createBricksArray() {
 
@@ -222,7 +210,6 @@ const breakOutGame = {
                     this.brickPos.y = r * (this.brickSize.w - 70) 
                     this.bricks[c][r].x = this.brickPos.x
                     this.bricks[c][r].y =  this.brickPos.y
-                    //this.ctx.fillStyle = this.brickColors[parseInt(Math.random()*this.brickColors.length)] 
                     //console.log(this.ctx.fillStyle);
                     switch (r) {
                         case 1:
@@ -288,14 +275,21 @@ const breakOutGame = {
     },
 
     setScore() {
-            
+
+        let scoreNode = document.querySelector('.score span')
+           
         this.score += 10
-        const scoreNode = document.querySelector('.score span')
-        
-        // console.log(this.score, '---', scoreNode)
-
         this.score < 100 ? scoreNode.innerText = '0' + this.score : scoreNode.innerText = this.score
+        
+        if (this.lifes === 0) {
 
+            this.score = 0
+            scoreNode.innerText = '000'
+
+        }
+
+        
+        
     },
 
 
@@ -368,9 +362,9 @@ const breakOutGame = {
                     brick_hit.play()
                     b.status = false
                     this.setScore()
+                    this.isWin()
                     //console.log(b,'---',b.status)
                     if (b.power) {
-                        //this.powerUp.draw(b.x, b.y)
                                                   
                         this.powerUpsArray.push({x: b.x, y: b.y})
                         
@@ -445,6 +439,7 @@ const breakOutGame = {
  
     // CLEAR SCREEN 
     clearScreen() {
+        
         this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
     },
 
@@ -453,7 +448,8 @@ const breakOutGame = {
 
         if (this.lifes > 0) {
             //console.log('entró');
-
+            life_lost.play()
+            
             this.ball.ballPos.x = (this.canvasSize.w / 2)
             this.ball.ballPos.y = (this.canvasSize.h / 2)
 
@@ -462,8 +458,7 @@ const breakOutGame = {
 
         } else {
 
-            this.gameOver()
-            lose.play()
+            this.gameOver('lose')
 
         }
 
@@ -473,7 +468,6 @@ const breakOutGame = {
     lifeCounter() {
 
         this.lifes--
-        life_lost.play()
         this.isLosingLife()
 
         // Update HTML deleting the heart
@@ -483,17 +477,29 @@ const breakOutGame = {
     },
     
     // POP UPS GAME OVER/WIN
-    banner() {
+    banner(status) {
 
         const gameOverNode = document.querySelector('.gameover')
-        const youWinNode = document.querySelector('.you-lose')
-        
-        // If lose
-        gameOverNode.style.opacity = '1'
-        gameOverNode.style.display = 'flex'
-        youWinNode.classList.remove('hide')
 
-        // If win
+
+        if (status === 'win') {
+
+            const youWinNode = document.querySelector('.you-win')
+            
+            // If win
+            gameOverNode.classList.add('visible')
+            youWinNode.classList.remove('hide')   
+            win.play()
+
+        } else {
+
+            const youLoseNode = document.querySelector('.you-lose')
+            
+            // If lose
+            gameOverNode.classList.add('visible')
+            youLoseNode.classList.remove('hide') 
+            lose.play()
+        }
 
     },
         
@@ -517,20 +523,39 @@ const breakOutGame = {
             paddle_hit.muted = paddle_hit.muted ? false : true
             brick_hit.muted = brick_hit.muted ? false : true
             life_lost.muted = life_lost.muted ? false : true
+            power_up.muted = power_up.muted ? false : true
             win.muted = win.muted ? false : true
             lose.muted = lose.muted ? false : true
         }
 
     },
 
+    // WIN
+    isWin() { 
+        
+        let counter = 0
+        let prueba = this.bricks.forEach(
+                element => element.filter(
+                elm => elm.status === true ? counter++ : null
+            )
+        )
+
+        if (counter <= this.brickColumns) { 
+            this.gameOver('win')
+        }
+
+    },
+
     // GAMEOVER
-    gameOver() {
+    gameOver(status) {
                 
-        this.banner()
+        this.banner(status)
 
         clearInterval(this.interval)
-        this.createBricksArray()
-        this.reset()
+        
+        setTimeout (() => {
+            document.location.reload()
+        }, 4000)
         
     },
 

@@ -43,8 +43,6 @@ class PowerUps {
         
             this.move(x, y)
             this.ctx.drawImage(this.imageInstance, x, y, this.powerUpSize.w, this.powerUpSize.h)
-            // this.ctx.fillStyle = 'yellow'
-            // this.ctx.fillRect(x, y, this.powerUpSize.w, this.powerUpSize.h)
             //console.log(x, y);
     }
 
