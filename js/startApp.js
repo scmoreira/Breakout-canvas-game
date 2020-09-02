@@ -30,8 +30,8 @@ const breakOutGame = {
     },
     ball: undefined, 
     ballSize : {
-        w: 25,
-        h: 5
+        w: 30,
+        h: 30
     },
     ballRadius: undefined,
     ballVel: {
@@ -145,15 +145,17 @@ const breakOutGame = {
             this.drawBricks()
             this.isCollision()
             
-         }, 50)
+         }, 20)
         
     },
 
      // PAUSE THE GAME
      pause() {
+
         clearInterval(this.interval)
+        
     },
-    
+
     // CREATE ARRAY OF BRICKS
     createBricksArray() {
 
@@ -213,25 +215,27 @@ const breakOutGame = {
                     //console.log(this.ctx.fillStyle);
                     switch (r) {
                         case 1:
-                            this.ctx.fillStyle = 'red'
+                            this.ctx.fillStyle = '#FF00BF'
                         break
                         case 2: 
-                        this.ctx.fillStyle = 'green'
+                            this.ctx.fillStyle = '#ffff00'
                         break
                         case 3: 
-                        this.ctx.fillStyle = 'yellow'
+                            this.ctx.fillStyle = '#0000ff'
                         break
                         case 4:
-                            this.ctx.fillStyle = 'blue'
+                            this.ctx.fillStyle = '#FF0000'
                         break
                         case 5:
-                            this.ctx.fillStyle = 'white'
+                            this.ctx.fillStyle = '#00FF00'
                         break
                         case 6:
-                            this.ctx.fillStyle = 'orange'
+                            this.ctx.fillStyle = '#ff8000'
                         break
                     }
 
+                    this.ctx.strokeStyle = "black"
+                    this.ctx.strokeRect(this.brickPos.x, this.brickPos.y, this.brickSize.w, this.brickSize.h)
                     this.ctx.fillRect(this.brickPos.x, this.brickPos.y, this.brickSize.w, this.brickSize.h)
                     //console.log(this.bricks[0][0]);
                     //console.log(this.brickPos.y);
@@ -244,7 +248,9 @@ const breakOutGame = {
 
     // DRAW POWER-UPS
     drawPowerUps() {
+        
         for (let i = 0; i < this.powerUpsArray.length; i++) {
+            
             if (i === 0) {
                 null
             } else {
@@ -287,11 +293,8 @@ const breakOutGame = {
             scoreNode.innerText = '000'
 
         }
-
-        
         
     },
-
 
     // CHECK BOUNDERIES
     setBounderies() {
@@ -302,17 +305,15 @@ const breakOutGame = {
             wall_hit.play()
             this.ball.ballVel.y *= -1
 
-        } else if (this.ball.ballPos.y + this.ball.ballRadius > this.canvasSize.h) {
+        } else if (this.ball.ballPos.y + this.ball.ballRadius >= this.canvasSize.h) {
 
-            
             this.lifeCounter()
-
             //this.isLosingLife()
 
         }
 
         // Right and left boundaries
-        if (this.ball.ballPos.x < this.canvasSize.w - this.canvasSize.w || this.ball.ballPos.x > this.canvasSize.w - this.ballSize.w) {
+        if (this.ball.ballPos.x - this.ball.ballRadius < this.canvasSize.w - this.canvasSize.w || this.ball.ballPos.x + this.ball.ballRadius > this.canvasSize.w) {
 
             wall_hit.play()
             this.ball.ballVel.x *= -1
@@ -329,7 +330,7 @@ const breakOutGame = {
     isPaddleCollision() {
 
         if (this.ball.ballPos.y + this.ball.ballRadius > this.paddle.paddlePos.y &&
-            this.ball.ballPos.y - this.ball.ballRadius < this.paddle.paddlePos.y + this.paddle.paddleSize.h &&
+            //this.ball.ballPos.y - this.ball.ballRadius < this.paddle.paddlePos.y + this.paddle.paddleSize.h &&
             this.ball.ballPos.x + this.ball.ballRadius > this.paddle.paddlePos.x &&
             this.ball.ballPos.x - this.ball.ballRadius < this.paddle.paddlePos.x + this.paddle.paddleSize.w) {
                 
@@ -343,7 +344,7 @@ const breakOutGame = {
         }
     },
 
-    isBrickCollision(){
+    isBrickCollision() {
         
         for(let c = 0; c < this.brickColumns; c++) {
 
@@ -351,7 +352,7 @@ const breakOutGame = {
 
              let b = this.bricks[c][r]
 
-               if (b.status) { 
+              if (b.status) { 
 
                 if (this.ball.ballPos.y + this.ball.ballRadius > b.y &&
                     this.ball.ballPos.y - this.ball.ballRadius < b.y + this.brickSize.h &&
@@ -378,6 +379,7 @@ const breakOutGame = {
     },
 
     setPowerUp(type) {
+
         const paddleRealSize = this.paddleSize.w
         const ballRealVel = this.ballVel
         console.log(type);

@@ -12,10 +12,10 @@ class Ball {
         }
         this.ballRadius = this.ballSize.w / 2
         this.ballVel = {
-            x: 10,
-            y: 30
+            x: 5,
+            y: 10
         }
-        this.ballGravity = .4
+        this.ballGravity = .2
         this.canvasSize = canvasSize
     }
 
@@ -25,7 +25,7 @@ class Ball {
 
         this.ctx.fillStyle = 'red'
         this.ctx.beginPath()
-        this.ctx.arc(this.ballPos.x, this.ballPos.y, 15, 0, Math.PI * 2)
+        this.ctx.arc(this.ballPos.x, this.ballPos.y, this.ballRadius, 0, Math.PI * 2)
         this.ctx.closePath()
         this.ctx.fill()
         
@@ -33,7 +33,7 @@ class Ball {
 
     move(){
         
-        this.ctx.clearRect(0, 0, this.ballSize.w, this.ballSize.h);
+        //this.ctx.clearRect(0, 0, this.ballSize.w, this.ballSize.h);
 
         this.ballPos.x += this.ballVel.x    
         this.ballVel.y += this.ballGravity
