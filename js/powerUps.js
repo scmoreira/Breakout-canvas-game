@@ -16,17 +16,17 @@ class PowerUps {
             y: undefined
         }
         this.powerUpSize = {
-            w: 70,
-            h: 70
+            w: 30,
+            h: 30
         }
         this.powerUpVel = {
             x: 0,
-            y: 10
+            y: 5
         }
-        this.powerUpGravity = .4
+        this.gravity = 5
         this.canvasSize = canvasSize
 
-        this.imageName = 'box-2.png'
+        this.imageName = 'box.png'
         this.imageInstance = undefined 
 
         this.init()
@@ -42,19 +42,8 @@ class PowerUps {
 
     draw(x, y) {
         
-        this.move(x, y)
         this.ctx.drawImage(this.imageInstance, x, y, this.powerUpSize.w, this.powerUpSize.h)
         
-    }
-
-    move(x, y) {
-        
-        this.ctx.clearRect(0, 0, this.powerUpSize.w, this.powerUpSize.h)
-
-        this.powerUpVel.y += this.powerUpGravity
-        y += this.powerUpVel.y
-
-       
     }
 
 }   

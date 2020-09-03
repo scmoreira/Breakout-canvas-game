@@ -297,7 +297,7 @@ const breakOutGame = {
 
                 this.powerUp.draw(powerUpPosX, powerUpPosY)
                 
-                this.powerUpsArray[i].y += 10
+                this.powerUpsArray[i].y += this.powerUp.gravity
 
                 this.isPowerUpCollision(powerUpPosX, powerUpPosY)
             } 
@@ -453,7 +453,7 @@ const breakOutGame = {
             this.keycode.left = 37
             this.keycode.right = 39
 
-        }, 7000)
+        }, 5000)
     
     },
 

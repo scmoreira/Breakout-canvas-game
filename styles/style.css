@@ -1,3 +1,5 @@
+/* < ---------- GENERAL ---------- > */
+
 body {
   font-family: 'Press Start 2P', sans-serif;
   padding: 0;
@@ -6,18 +8,12 @@ body {
   color: #FFF;
 }
 
-.hide {
-  display: none;
-}
-
-.flex {
-  display: flex
-}
-
 .container {
   display: flex;
   justify-content: space-between;
 }
+
+/* < ---------- GAME INFO ---------- > */
 
 .game-intro {
   display: flex;
@@ -41,6 +37,15 @@ body {
   width: 75%;
 }
 
+.score {
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 2em !important;
+  text-transform: uppercase;
+  margin-top: 60px !important; 
+}
+
+/* < ---------- GAME INFO IMAGES ---------- > */
+
 .enter-key {
   width: 100px;
 }
@@ -50,12 +55,12 @@ body {
   width: 120px;
 }
 
-.score {
-  font-family: 'Press Start 2P', sans-serif;
-  font-size: 2em !important;
-  text-transform: uppercase;
-  margin-top: 80px !important; 
+.mistery-box {
+  width: 50px;
+  vertical-align: middle;
 }
+
+/* < ---------- GAME OVER  ---------- > */
 
 .gameover {
   flex-direction: column;
@@ -65,6 +70,10 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+}
+
+.hide {
   display: none;
 }
 
@@ -86,6 +95,8 @@ body {
   color: #FFF;
   font-family: 'Russo One', sans-serif;
 }
+
+/* < ---------- GAME STATS ---------- > */
 
 .game-stats {
   display: flex;
