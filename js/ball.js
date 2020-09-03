@@ -1,6 +1,7 @@
 class Ball {
 
-    constructor(ctx, ballPosX, ballPosY, ballW, ballH, canvasSize){
+    constructor(ctx, ballPosX, ballPosY, ballW, ballH, canvasSize) {
+
         this.ctx = ctx
         this.ballPos = {
             x: ballPosX,
@@ -15,11 +16,11 @@ class Ball {
             x: 5,
             y: 10
         }
-        this.ballGravity = .2
         this.canvasSize = canvasSize
+
     }
 
-    draw(){
+    draw() {
 
         this.move()
 
@@ -31,12 +32,9 @@ class Ball {
         
     }
 
-    move(){
+    move() {
         
-        //this.ctx.clearRect(0, 0, this.ballSize.w, this.ballSize.h);
-
         this.ballPos.x += this.ballVel.x    
-        this.ballVel.y += this.ballGravity
         this.ballPos.y += this.ballVel.y
 
     }

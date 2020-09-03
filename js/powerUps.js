@@ -1,6 +1,7 @@
 class PowerUps {
 
-    constructor(ctx, paddleSizeW, paddleSizeH, ballSizeW, ballSizeH, canvasSize){
+    constructor(ctx, paddleSizeW, paddleSizeH, ballSizeW, ballSizeH, canvasSize) {
+
         this.ctx = ctx
         this.paddleSize = {
             w: paddleSizeW,
@@ -29,37 +30,31 @@ class PowerUps {
         this.imageInstance = undefined 
 
         this.init()
+        
     }
 
-    init(){
+    init() {
+
        this.imageInstance = new Image()
        this.imageInstance.src = `./img/${this.imageName}`
-        
-    
 
     }
 
-    draw(x, y){
+    draw(x, y) {
         
-            this.move(x, y)
-            this.ctx.drawImage(this.imageInstance, x, y, this.powerUpSize.w, this.powerUpSize.h)
-            //console.log(x, y);
+        this.move(x, y)
+        this.ctx.drawImage(this.imageInstance, x, y, this.powerUpSize.w, this.powerUpSize.h)
+        
     }
 
-    move(x, y){
+    move(x, y) {
         
         this.ctx.clearRect(0, 0, this.powerUpSize.w, this.powerUpSize.h)
 
-        //this.powerUpPos.x += this.powerUpPos.x    
-        //y += this.powerUpGravity
-        //y += this.powerUpVel.y
-
         this.powerUpVel.y += this.powerUpGravity
         y += this.powerUpVel.y
-        //console.log(y, '------');
 
        
     }
 
-    
-}
+}   

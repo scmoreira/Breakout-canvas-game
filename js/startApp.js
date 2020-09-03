@@ -6,7 +6,6 @@ const breakOutGame = {
     description: 'Proyecto 1, Canvas game',
     canvasId: undefined,
     ctx: undefined,
-    FPS: 60,
     lifes: 3,
     score: 0,
     canvasSize: {
@@ -34,11 +33,6 @@ const breakOutGame = {
         h: 30
     },
     ballRadius: undefined,
-    ballVel: {
-        x: 10,
-        y: 30
-    },
-    ballGravity: 0,
     brickSize: {
         w: 105,
         h: 30
@@ -47,7 +41,6 @@ const breakOutGame = {
         x: 0,
         y: 0
     },
-    brickColors: ['rgb(255,0,0)','rgb(0,255,0)','rgb(0,0,255)','rgb(255,255,0)'],
     bricks: [],
     brickRows: 7,
     brickColumns: 9,
@@ -61,14 +54,12 @@ const breakOutGame = {
         w: 35,
         h: 35
     },
-    powerUpType: ['smallPaddle', 'bigPaddle', 'fastBall', 'crazyKeys'],
-
+    powerUpType: ['smallPaddle', 'bigPaddle','fastBall', 'crazyKeys'],
 
     // INITIALIZE THE GAME
     init(id){
         this.canvasId = id
         this.ctx = document.getElementById(this.canvasId).getContext('2d')
-        //console.log(this.ctx)
         this.setDimensions()
         this.createBricksArray()
         this.reset()
@@ -98,14 +89,12 @@ const breakOutGame = {
             
             e.keyCode === this.keycode.left ? this.paddle.movePaddle('left') : null
             e.keyCode === this.keycode.right ? this.paddle.movePaddle('right') : null
-            //console.log(e)
 
             // PAUSE / START
             if (e.keyCode === this.keycode.enter && this.isPlaying === false) {
                 this.start()
                 this.isPlaying = true
             } else if (e.keyCode === this.keycode.enter && this.isPlaying === true) {
-                //console.log('Pausado')
                 
                 this.pause()
 
@@ -121,7 +110,7 @@ const breakOutGame = {
         this.drawBackground()
 
         const centerX = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
-        const centerY = (this.canvasSize.h - 80)
+        const centerY = (this.canvasSize.h - 50)
 
         this.paddle = new Paddle(this.ctx, centerX, centerY, this.paddleSize.w, this.paddleSize.h, this.canvasSize)
         this.ball = new Ball(this.ctx, centerX + (this.paddleSize.w / 2), this.canvasSize.h / 2, this.ballSize.w, this.ballSize.h, this.canvasSize)
@@ -137,7 +126,6 @@ const breakOutGame = {
 
         this.setEventListener()
 
-        //this.reset()
         this.interval = setInterval(() => {
 
             this.clearScreen()
@@ -150,361 +138,12 @@ const breakOutGame = {
     },
 
      // PAUSE THE GAME
-     pause() {
+    pause() {
 
         clearInterval(this.interval)
         
     },
-
-    // CREATE ARRAY OF BRICKS
-    createBricksArray() {
-
-        for (let c = 0; c < this.brickColumns; c++) {
-            this.bricks[c] = []
     
-            for (let r = 0; r < this.brickRows; r++) {
-               this.bricks[c][r] = {x: 0, y: 0, status: true, power: false}
-               
-            }
-           
-        }
-        
-        // Generate random powerups location
-        for (let i = 0; i < 7; i++) {
-             
-            let columnIndex = Math.floor(Math.random() * 8)
-            let rowIndex = Math.floor(Math.random() * 6) + 1
-            
-           if (this.bricks[columnIndex][rowIndex].power === true) {
-              
-                null
-              
-           } else {
-               
-                this.bricks[columnIndex][rowIndex].power = true
-                 
-           }
-        }
-    },
-
-    // BACKGROUND
-    drawBackground() {
-        
-        this.ctx.lineWidth = 5
-        this.ctx.fillStyle = 'black' //#d1ebf7
-        this.ctx.fillRect(0, 0, this.canvasSize.w, this.canvasSize.h)
-        this.ctx.strokeStyle = "white"
-        this.ctx.strokeRect(0, 0, this.canvasSize.w, this.canvasSize.h)
-        
-    },
-    
-    // DRAW BRICKS WALL
-    drawBricks() {
-        //console.log(this.brickRows)
-        
-        for (let c = 0; c < this.brickColumns; c++) {
-
-            for (let r = 1; r < this.brickRows; r++) {
-                  
-                if (this.bricks[c][r].status) {
-
-                    this.brickPos.x = c * (this.brickSize.h + 80) + 7
-                    this.brickPos.y = r * (this.brickSize.w - 70) 
-                    this.bricks[c][r].x = this.brickPos.x
-                    this.bricks[c][r].y =  this.brickPos.y
-                    //console.log(this.ctx.fillStyle);
-                    switch (r) {
-                        case 1:
-                            this.ctx.fillStyle = '#FF00BF'
-                        break
-                        case 2: 
-                            this.ctx.fillStyle = '#ffff00'
-                        break
-                        case 3: 
-                            this.ctx.fillStyle = '#0000ff'
-                        break
-                        case 4:
-                            this.ctx.fillStyle = '#FF0000'
-                        break
-                        case 5:
-                            this.ctx.fillStyle = '#00FF00'
-                        break
-                        case 6:
-                            this.ctx.fillStyle = '#ff8000'
-                        break
-                    }
-
-                    this.ctx.strokeStyle = "black"
-                    this.ctx.strokeRect(this.brickPos.x, this.brickPos.y, this.brickSize.w, this.brickSize.h)
-                    this.ctx.fillRect(this.brickPos.x, this.brickPos.y, this.brickSize.w, this.brickSize.h)
-                    //console.log(this.bricks[0][0]);
-                    //console.log(this.brickPos.y);
-                }
-                
-            }
-        }
-        
-    },
-
-    // DRAW POWER-UPS
-    drawPowerUps() {
-        
-        for (let i = 0; i < this.powerUpsArray.length; i++) {
-            
-            if (i === 0) {
-                null
-            } else {
-                  
-                let powerUpPosX = this.powerUpsArray[i].x + (this.brickSize.w / 2 - this.powerUpSize.w/2)
-                let powerUpPosY = this.powerUpsArray[i].y + this.brickSize.h
-                let randomType = Math.floor(Math.random() * this.powerUpType.length)
-                this.powerUpsArray[i].type = this.powerUpType[randomType]
-                //console.log(this.powerUpsArray[i].type);
-                
-                this.powerUp.draw(powerUpPosX, powerUpPosY)
-                this.powerUpsArray[i].y += 10
-
-                this.isPowerUpCollision(powerUpPosX, powerUpPosY)
-            } 
-        }
-       
-    },
-
-    // DRAW THE BOARD
-    drawAll() {
-
-        this.drawBackground()
-        this.paddle.draw()
-        this.ball.draw()
-        this.drawPowerUps()
-        //console.log(this.powerUpsArray)
-    },
-
-    setScore() {
-
-        let scoreNode = document.querySelector('.score span')
-           
-        this.score += 10
-        this.score < 100 ? scoreNode.innerText = '0' + this.score : scoreNode.innerText = this.score
-        
-        if (this.lifes === 0) {
-
-            this.score = 0
-            scoreNode.innerText = '000'
-
-        }
-        
-    },
-
-    // CHECK BOUNDERIES
-    setBounderies() {
-
-        // Up and down bounderies
-        if (this.ball.ballPos.y - this.ball.ballRadius < 0) {
-
-            wall_hit.play()
-            this.ball.ballVel.y *= -1
-
-        } else if (this.ball.ballPos.y + this.ball.ballRadius >= this.canvasSize.h) {
-
-            this.lifeCounter()
-            //this.isLosingLife()
-
-        }
-
-        // Right and left boundaries
-        if (this.ball.ballPos.x - this.ball.ballRadius < this.canvasSize.w - this.canvasSize.w || this.ball.ballPos.x + this.ball.ballRadius > this.canvasSize.w) {
-
-            wall_hit.play()
-            this.ball.ballVel.x *= -1
-
-        } else {
-
-            null
-
-        }
-
-    },
-
-    // CHECK COLLISIONS
-    isPaddleCollision() {
-
-        if (this.ball.ballPos.y + this.ball.ballRadius > this.paddle.paddlePos.y &&
-            //this.ball.ballPos.y - this.ball.ballRadius < this.paddle.paddlePos.y + this.paddle.paddleSize.h &&
-            this.ball.ballPos.x + this.ball.ballRadius > this.paddle.paddlePos.x &&
-            this.ball.ballPos.x - this.ball.ballRadius < this.paddle.paddlePos.x + this.paddle.paddleSize.w) {
-                
-            this.ball.ballVel.y *= -1
-            paddle_hit.play()
-            
-        } else {
-
-            null
-
-        }
-    },
-
-    isBrickCollision() {
-        
-        for(let c = 0; c < this.brickColumns; c++) {
-
-            for(let r = 1; r < this.brickRows; r++) {
-
-             let b = this.bricks[c][r]
-
-              if (b.status) { 
-
-                if (this.ball.ballPos.y + this.ball.ballRadius > b.y &&
-                    this.ball.ballPos.y - this.ball.ballRadius < b.y + this.brickSize.h &&
-                    this.ball.ballPos.x + this.ball.ballRadius > b.x &&
-                    this.ball.ballPos.x - this.ball.ballRadius < b.x + this.brickSize.w) {
-                    //console.log('golpea')
-                    this.ball.ballVel.y *= -1
-                    brick_hit.play()
-                    b.status = false
-                    this.setScore()
-                    this.isWin()
-                    //console.log(b,'---',b.status)
-                    if (b.power) {
-                                                  
-                        this.powerUpsArray.push({x: b.x, y: b.y})
-                        
-                    }
-                }
-
-              }
-            
-            }
-        }
-    },
-
-    setPowerUp(type) {
-
-        const paddleRealSize = this.paddleSize.w
-        const ballRealVel = this.ballVel
-        console.log(type);
-
-        switch (type) {
-          case 'bigPaddle':
-            this.paddle.paddleSize.w *= 2
-            break
-          case 'smallPaddle':
-            this.paddle.paddleSize.w /= 2
-            break
-          case 'fastBall':
-            this.ball.ballVel.y *= 2
-            break
-          case 'crazyKeys':
-              this.keycode.left = 39
-              this.keycode.right = 37
-        }
-        
-        setTimeout(() => {
-            
-            this.paddle.paddleSize.w = paddleRealSize
-            this.ball.ballVel = ballRealVel
-
-        }, 7000)
-    
-    },
-
-    isPowerUpCollision(powerUpPosX, powerUpPosY){
-
-        for (let i = 0; i < this.powerUpsArray.length; i++) {
-            if (i === 0) {
-                null
-            } else {
-        
-                if (powerUpPosX + this.powerUpSize.w > this.paddle.paddlePos.x &&
-                    powerUpPosX < this.paddle.paddlePos.x + this.paddle.paddleSize.w &&
-                    powerUpPosY + this.powerUpSize.h > this.paddle.paddlePos.y) {
-                    //console.log('colisioooon')
-                    power_up.play()
-                    this.setPowerUp(this.powerUpsArray[i].type)
-                    this.powerUpsArray.splice(i, 1)
-                    //console.log(this.powerUpsArray)
-                    
-                    //console.log(this.paddleSize.w)
-                } else if ( powerUpPosY + this.powerUpSize.h > this.canvasSize.h) {
-                    this.powerUpsArray.splice(i, 1)
-                }
-            }
-        } 
-    },
-
-    isCollision() {
-
-        this.setBounderies()
-        this.isPaddleCollision()
-        this.isBrickCollision()
-    },
- 
-    // CLEAR SCREEN 
-    clearScreen() {
-        
-        this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
-    },
-
-    // LOOSE LIFE
-    isLosingLife() {
-
-        if (this.lifes > 0) {
-            //console.log('entró');
-            life_lost.play()
-            
-            this.ball.ballPos.x = (this.canvasSize.w / 2)
-            this.ball.ballPos.y = (this.canvasSize.h / 2)
-
-            this.paddle.paddlePos.x = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
-            this.paddle.paddlePos.y = (this.canvasSize.h - 70)
-
-        } else {
-
-            this.gameOver('lose')
-
-        }
-
-    },
-
-    // LIFE COUNTER
-    lifeCounter() {
-
-        this.lifes--
-        this.isLosingLife()
-
-        // Update HTML deleting the heart
-        const lifeNode = document.querySelectorAll('.life')
-        lifeNode[this.lifes].style.opacity = '0'
-
-    },
-    
-    // POP UPS GAME OVER/WIN
-    banner(status) {
-
-        const gameOverNode = document.querySelector('.gameover')
-
-
-        if (status === 'win') {
-
-            const youWinNode = document.querySelector('.you-win')
-            
-            // If win
-            gameOverNode.classList.add('visible')
-            youWinNode.classList.remove('hide')   
-            win.play()
-
-        } else {
-
-            const youLoseNode = document.querySelector('.you-lose')
-            
-            // If lose
-            gameOverNode.classList.add('visible')
-            youLoseNode.classList.remove('hide') 
-            lose.play()
-        }
-
-    },
-        
     // SOUND MANAGEMENT
     soundManagement() {
 
@@ -528,22 +167,374 @@ const breakOutGame = {
             power_up.muted = power_up.muted ? false : true
             win.muted = win.muted ? false : true
             lose.muted = lose.muted ? false : true
+            
         }
+
+    },
+
+    setScore() {
+
+        let scoreNode = document.querySelector('.score span')
+           
+        this.score += 10
+        this.score < 100 ? scoreNode.innerText = '0' + this.score : scoreNode.innerText = this.score
+        
+        if (this.lifes === 0) {
+
+            this.score = 0
+            scoreNode.innerText = '000'
+
+        }
+        
+    },
+
+    // BACKGROUND
+    drawBackground() {
+        
+        this.ctx.lineWidth = 5
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect(0, 0, this.canvasSize.w, this.canvasSize.h)
+        this.ctx.strokeStyle = "white"
+        this.ctx.strokeRect(0, 0, this.canvasSize.w, this.canvasSize.h)
+        
+    },
+
+    // CREATE ARRAY OF BRICKS
+    createBricksArray() {
+
+        for (let c = 0; c < this.brickColumns; c++) {
+            
+            this.bricks[c] = []
+    
+            for (let r = 0; r < this.brickRows; r++) {
+
+               this.bricks[c][r] = {x: 0, y: 0, status: true, power: false}
+               
+            }
+           
+        }
+        
+        // Generate random powerups location
+        for (let i = 0; i < this.brickColumns; i++) {
+             
+            let columnIndex = Math.floor(Math.random() * (this.brickColumns - 1))
+            let rowIndex = Math.floor(Math.random() * (this.brickRows - 1)) + 1
+            
+           if (this.bricks[columnIndex][rowIndex].power === true) {
+              
+                null
+              
+           } else {
+               
+                this.bricks[columnIndex][rowIndex].power = true
+                 
+           }
+        }
+    },
+
+    // DRAW BRICKS WALL
+    drawBricks() {
+        
+        for (let c = 0; c < this.brickColumns; c++) {
+
+            for (let r = 1; r < this.brickRows; r++) {
+                  
+                if (this.bricks[c][r].status) {
+
+                    this.brickPos.x = c * (this.brickSize.h + 80) + 7  // Add space between columns
+                    this.brickPos.y = r * (this.brickSize.w - 70)  // Add space between rows
+                    this.bricks[c][r].x = this.brickPos.x
+                    this.bricks[c][r].y =  this.brickPos.y
+
+                    switch (r) {
+                        case 1:
+                            this.ctx.fillStyle = '#FF00BF'
+                        break
+                        case 2: 
+                            this.ctx.fillStyle = '#ffff00'
+                        break
+                        case 3: 
+                            this.ctx.fillStyle = '#0000ff'
+                        break
+                        case 4:
+                            this.ctx.fillStyle = '#FF0000'
+                        break
+                        case 5:
+                            this.ctx.fillStyle = '#00FF00'
+                            break
+                        case 6:
+                                this.ctx.fillStyle = '#ff8000'
+                        break
+                    }
+
+                    this.ctx.strokeStyle = "black"
+                    this.ctx.strokeRect(this.brickPos.x, this.brickPos.y, this.brickSize.w, this.brickSize.h)
+                    this.ctx.fillRect(this.brickPos.x, this.brickPos.y, this.brickSize.w, this.brickSize.h)
+                
+                }
+                
+            }
+        }
+        
+    },
+
+    // DRAW POWER-UPS
+    drawPowerUps() {
+
+        for (let i = 0; i < this.powerUpsArray.length; i++) {
+            
+            if (i === 0) {
+
+                null
+
+            } else {
+                  
+                let powerUpPosX = this.powerUpsArray[i].x + (this.brickSize.w / 2 - this.powerUpSize.w/2)
+                let powerUpPosY = this.powerUpsArray[i].y + this.brickSize.h
+                let randomType = Math.floor(Math.random() * this.powerUpType.length)
+                
+                this.powerUpsArray[i].type = this.powerUpType[randomType]
+
+                this.powerUp.draw(powerUpPosX, powerUpPosY)
+                
+                this.powerUpsArray[i].y += 10
+
+                this.isPowerUpCollision(powerUpPosX, powerUpPosY)
+            } 
+        }
+       
+    },
+
+    // DRAW THE BOARD
+    drawAll() {
+
+        this.drawBackground()
+        this.paddle.draw()
+        this.ball.draw()
+        this.drawPowerUps()
+        
+    },
+
+    // CHECK BOUNDERIES
+    setBounderies() {
+
+        // Up and down bounderies
+        if (this.ball.ballPos.y - this.ball.ballRadius < 0) {
+
+            wall_hit.play()
+            this.ball.ballVel.y *= -1
+
+        } else if (this.ball.ballPos.y + this.ball.ballRadius >= this.canvasSize.h) {
+
+            this.lifeCounter()
+
+        }
+
+        // Right and left boundaries
+        if (this.ball.ballPos.x - this.ball.ballRadius < this.canvasSize.w - this.canvasSize.w || this.ball.ballPos.x + this.ball.ballRadius > this.canvasSize.w) {
+
+            wall_hit.play()
+            this.ball.ballVel.x *= -1
+
+        } else {
+
+            null
+
+        }
+
+    },
+
+    // CHECK COLLISIONS
+    isPaddleCollision() {
+
+        if (this.ball.ballPos.y + this.ball.ballRadius > this.paddle.paddlePos.y &&
+            this.ball.ballPos.y - this.ball.ballRadius < this.paddle.paddlePos.y + this.paddle.paddleSize.h &&
+            this.ball.ballPos.x + this.ball.ballRadius > this.paddle.paddlePos.x &&
+            this.ball.ballPos.x - this.ball.ballRadius < this.paddle.paddlePos.x + this.paddle.paddleSize.w) {
+
+                if (this.ball.ballPos.y + this.ball.ballRadius > this.paddle.paddlePos.y + this.paddle.paddleSize.h) {
+                    this.ball.ballVel.y *= 2
+                    
+                }
+   
+            this.ball.ballVel.y *= -1
+            paddle_hit.play()
+            
+        } 
+        
+    },
+
+    isBrickCollision() {
+        
+        for(let c = 0; c < this.brickColumns; c++) {
+
+            for(let r = 1; r < this.brickRows; r++) {
+
+             let b = this.bricks[c][r]
+
+              if (b.status) { 
+
+                if (this.ball.ballPos.y + this.ball.ballRadius > b.y &&
+                    this.ball.ballPos.y - this.ball.ballRadius < b.y + this.brickSize.h &&
+                    this.ball.ballPos.x + this.ball.ballRadius > b.x &&
+                    this.ball.ballPos.x - this.ball.ballRadius < b.x + this.brickSize.w) {
+
+                    this.ball.ballVel.y *= -1
+                    b.status = false
+                    
+                    brick_hit.play()
+                    this.setScore()
+                    this.isWin()
+                    
+                    if (b.power) {
+                                                  
+                        this.powerUpsArray.push({x: b.x, y: b.y})
+                        
+                    }
+                }
+
+              }
+            
+            }
+        }
+    },
+
+    isPowerUpCollision(powerUpPosX, powerUpPosY) {
+
+        for (let i = 0; i < this.powerUpsArray.length; i++) {
+
+            if (i === 0) {
+
+                null
+
+            } else {
+        
+                if (powerUpPosX + this.powerUpSize.w > this.paddle.paddlePos.x &&
+                    powerUpPosX < this.paddle.paddlePos.x + this.paddle.paddleSize.w &&
+                    powerUpPosY + this.powerUpSize.h > this.paddle.paddlePos.y) {
+
+                    power_up.play()
+                    this.setPowerUp(this.powerUpsArray[i].type)
+                    this.powerUpsArray.splice(i, 1)
+                    
+                } else if ( powerUpPosY + this.powerUpSize.h > this.canvasSize.h) {
+                    
+                    this.powerUpsArray.splice(i, 1)
+                    
+                }
+            }
+        } 
+    },
+
+    setPowerUp(type) {
+
+        const paddleRealSize = this.paddleSize.w
+        const ballRealVel = this.ball.ballVel.y
+       
+        switch (type) {
+          case 'bigPaddle':
+            this.paddle.paddleSize.w *= 2
+            break
+            case 'smallPaddle':
+            this.paddle.paddleSize.w /= 2
+            break
+          case 'fastBall':
+            this.ball.ballVel.y *= 2
+            break
+          case 'crazyKeys':
+              this.keycode.left = 39
+              this.keycode.right = 37
+        }
+        
+        setTimeout(() => {
+            
+            this.paddle.paddleSize.w = paddleRealSize
+            this.ball.ballVel.y = ballRealVel
+            this.keycode.left = 37
+            this.keycode.right = 39
+
+        }, 7000)
+    
+    },
+
+    isCollision() {
+
+        this.setBounderies()
+        this.isPaddleCollision()
+        this.isBrickCollision()
+
+    },
+ 
+    // LOSE LIFE
+    isLose() {
+
+        if (this.lifes > 0) {
+            
+            life_lost.play()
+            
+            this.ball.ballPos.x = (this.canvasSize.w / 2)
+            this.ball.ballPos.y = (this.canvasSize.h / 2)
+
+            this.paddle.paddlePos.x = (this.canvasSize.w / 2) - (this.paddleSize.w / 2)
+            this.paddle.paddlePos.y = (this.canvasSize.h - 70)
+
+        } else {
+
+            this.gameOver('lose')
+
+        }
+
+    },
+
+    // LIFE COUNTER
+    lifeCounter() {
+
+        this.lifes--
+        this.isLose()
+
+        // Update HTML deleting the heart
+        const lifeNode = document.querySelectorAll('.life')
+        lifeNode[this.lifes].style.opacity = '0'
 
     },
 
     // WIN
     isWin() { 
-        
-        let counter = 0
-        let prueba = this.bricks.forEach(
-                element => element.filter(
-                elm => elm.status === true ? counter++ : null
-            )
-        )
 
-        if (counter <= this.brickColumns) { 
+        let unifiedBricksArray = this.bricks.flat()
+        let trueBricks = unifiedBricksArray.filter(element => element.status === true && element.y > 0)
+
+        if (trueBricks.length === 0) {
+
             this.gameOver('win')
+
+        }
+
+    },
+    
+    // POP UPS GAME OVER/WIN
+    banner(status) {
+
+        const gameOverNode = document.querySelector('.gameover')
+
+        if (status === 'win') {
+
+            const youWinNode = document.querySelector('.you-win')
+            
+            // If win
+            gameOverNode.classList.add('visible')
+            youWinNode.classList.remove('hide')   
+            win.play()
+
+        } else {
+
+            const youLoseNode = document.querySelector('.you-lose')
+            
+            // If lose
+            gameOverNode.classList.add('visible')
+            youLoseNode.classList.remove('hide') 
+            lose.play()
+
         }
 
     },
@@ -555,9 +546,18 @@ const breakOutGame = {
 
         clearInterval(this.interval)
         
-        setTimeout (() => {
+        setTimeout(() => {
+            
             document.location.reload()
+
         }, 4000)
+        
+    },
+
+    // CLEAR SCREEN 
+    clearScreen() {
+        
+        this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h)
         
     },
 
