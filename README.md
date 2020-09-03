@@ -9,10 +9,10 @@ You can play [here](https://scmoreira.github.io/Breakout-canvas-game/)
 ## How to play
 
 - Press Enter to start and pause the game.
-- Use the rigth and left arrows to control the paddle.
-- You can mute pressing the sound button.
-- The objective of this game it's to break all the bricks, starting with 3 lifes.
-- You have to be careful with the mistery boxes, those makes some changes to the game.
+- Use right and left arrows to control the paddle.
+- You can mute by pressing the sound button.
+- The goal of this game is to break all the bricks, starting with 3 lifes.
+- You have to be careful with the mistery boxes, they cause some changes in the game.
 
 ## Built With
  
